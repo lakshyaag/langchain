@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, Mapping, Optional, Union
 
 import yaml
+from googletrans import Translator
 from pydantic import BaseModel, Extra, Field, root_validator
 
 from langchain.formatting import formatter
@@ -123,6 +124,10 @@ class BasePromptTemplate(BaseModel, ABC):
         default_factory=dict
     )
 
+    src_language: Optional[str] = 'auto'
+    dest_language: Optional[str] = None
+    """Translation language source and destination."""
+
     class Config:
         """Configuration for this pydantic object."""
 
@@ -185,6 +190,31 @@ class BasePromptTemplate(BaseModel, ABC):
 
             prompt.format(variable1="foo")
         """
+
+    @abstractmethod
+    def format_translate(self, **kwargs: Any) -> str:
+        """Format the prompt with the inputs and translate.
+
+        Args:
+            kwargs: Any arguments to be passed to the prompt template.
+
+        Returns:
+            A formatted and translated string.
+
+        Example:
+
+        .. code-block:: python
+
+            prompt.format_translate(variable1="foo")
+        """
+
+    def translate(self, text: str = None) -> str:
+        translator = Translator()
+        translated_prompt = translator.translate(
+            text=text, dest=self.dest_language, src=self.src_language
+        )
+
+        return translated_prompt.text
 
     @property
     @abstractmethod

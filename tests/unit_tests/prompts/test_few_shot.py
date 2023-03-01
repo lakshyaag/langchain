@@ -23,6 +23,21 @@ def test_suffix_only() -> None:
     expected_output = "This is a bar test."
     assert output == expected_output
 
+def test_suffix_translate_only() -> None:
+    """Test prompt translates and works with just a suffix."""
+    suffix = "This is a {foo} test."
+    input_variables = ["foo"]
+    prompt = FewShotPromptTemplate(
+        input_variables=input_variables,
+        suffix=suffix,
+        examples=[],
+        example_prompt=EXAMPLE_PROMPT,
+        dest_language='fr'
+    )
+    output = prompt.format_translate(foo="bar")
+    expected_output = "Ceci est un test de barre."
+    assert output == expected_output
+
 
 def test_prompt_missing_input_variables() -> None:
     """Test error is raised when input variables are not provided."""

@@ -63,6 +63,13 @@ class PromptTemplate(BasePromptTemplate, BaseModel):
         kwargs = self._merge_partial_and_user_variables(**kwargs)
         return DEFAULT_FORMATTER_MAPPING[self.template_format](self.template, **kwargs)
 
+    def translate(self) -> str:
+        return super().translate(text=self.template)
+
+    def format_translate(self, **kwargs: Any) -> str:
+        formatted_text = self.format(**kwargs)
+        return super().translate(formatted_text)
+
     @root_validator()
     def template_is_valid(cls, values: Dict) -> Dict:
         """Check that template and input variables are consistent."""

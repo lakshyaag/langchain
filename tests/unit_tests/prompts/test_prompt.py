@@ -145,3 +145,25 @@ def test_partial() -> None:
     assert new_result == "This is a 3 test."
     result = prompt.format(foo="foo")
     assert result == "This is a foo test."
+
+def test_translate_auto() -> None:
+    """Test prompt can be translated (auto-detect source)."""
+    template = "This is a {foo} test."
+    prompt = PromptTemplate(
+        input_variables=['foo'], template=template, dest_language='fr'
+    )
+    assert prompt.template == template
+    assert prompt.input_variables == ['foo']
+    result = prompt.translate()
+    assert result == "Ceci est un test {foo}."
+
+def test_translate() -> None:
+    """Test prompt can be translated (auto-detect source)."""
+    template = "Ceci est un test {foo}."
+    prompt = PromptTemplate(
+        input_variables=['foo'], template=template, src_language='fr', dest_language='en'
+    )
+    assert prompt.template == template
+    assert prompt.input_variables == ['foo']
+    result = prompt.translate()
+    assert result == "This is a test {foo}."

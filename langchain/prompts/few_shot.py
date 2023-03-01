@@ -115,6 +115,10 @@ class FewShotPromptTemplate(BasePromptTemplate, BaseModel):
         # Format the template with the input variables.
         return DEFAULT_FORMATTER_MAPPING[self.template_format](template, **kwargs)
 
+    def format_translate(self, **kwargs: Any) -> str:
+        formatted_text = self.format(**kwargs)
+        return super().translate(formatted_text)
+
     @property
     def _prompt_type(self) -> str:
         """Return the prompt type key."""
